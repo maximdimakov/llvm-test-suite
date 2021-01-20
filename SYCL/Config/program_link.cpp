@@ -21,9 +21,11 @@ int main(void) {
   program pro(c);
   pro.compile_with_kernel_type<DUMMY>();
   pro.link("-cl-finite-math-only");
-  assert(pro.get_state() == cl::sycl::program_state::linked && "fail to link program");
+  assert(pro.get_state() == cl::sycl::program_state::linked &&
+         "fail to link program");
   // CHECK-IS-FINITE-MATH: -cl-fast-relaxed-math
   // CHECK-IS-FINITE-MATH-NOT: -cl-finite-math-only
-  assert(pro.get_link_options() == "-cl-finite-math-only" && "program::get_link_options() output is wrong");
+  assert(pro.get_link_options() == "-cl-finite-math-only" &&
+         "program::get_link_options() output is wrong");
   return 0;
 }
