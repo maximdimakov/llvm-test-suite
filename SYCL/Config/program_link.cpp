@@ -3,6 +3,10 @@
 // RUN: %GPU_RUN_PLACEHOLDER SYCL_PI_TRACE=-1 SYCL_PROGRAM_LINK_OPTIONS="-cl-fast-relaxed-math" %t.out %GPU_CHECK_PLACEHOLDER --check-prefix=CHECK-IS-FINITE-MATH
 // RUN: %ACC_RUN_PLACEHOLDER SYCL_PI_TRACE=-1 SYCL_PROGRAM_LINK_OPTIONS="-cl-fast-relaxed-math" %t.out %ACC_CHECK_PLACEHOLDER --check-prefix=CHECK-IS-FINITE-MATH
 
+// RUN: %CPU_RUN_PLACEHOLDER SYCL_PI_TRACE=-1 SYCL_PROGRAM_COMPILE_OPTIONS="-cl-opt-disable" %t.out %CPU_CHECK_PLACEHOLDER --check-prefix=CHECK-IS-OPT-DISABLE
+// RUN: %GPU_RUN_PLACEHOLDER SYCL_PI_TRACE=-1 SYCL_PROGRAM_COMPILE_OPTIONS="-cl-opt-disable" %t.out %GPU_CHECK_PLACEHOLDER --check-prefix=CHECK-IS-OPT-DISABLE
+// RUN: %ACC_RUN_PLACEHOLDER SYCL_PI_TRACE=-1 SYCL_PROGRAM_COMPILE_OPTIONS="-cl-opt-disable" %t.out %ACCPU_CHECK_PLACEHOLDER --check-prefix=CHECK-IS-OPT-DISABLE
+
 #include <CL/sycl.hpp>
 #include <iostream>
 using namespace cl::sycl;
@@ -18,14 +22,23 @@ int main(void) {
     return 0;
   }
   context c(p);
-  program pro(c);
-  pro.compile_with_kernel_type<DUMMY>();
-  pro.link("-cl-finite-math-only");
-  assert(pro.get_state() == cl::sycl::program_state::linked &&
+  program prog1(c);
+  prog1.compile_with_kernel_type<DUMMY>();
+  prog1.link("-cl-finite-math-only");
+  assert(prog1.get_state() == cl::sycl::program_state::linked &&
          "fail to link program");
   // CHECK-IS-FINITE-MATH: -cl-fast-relaxed-math
   // CHECK-IS-FINITE-MATH-NOT: -cl-finite-math-only
-  assert(pro.get_link_options() == "-cl-finite-math-only" &&
+  assert(prog1.get_link_options() == "-cl-finite-math-only" &&
          "program::get_link_options() output is wrong");
+
+  program prog2(c);
+  prog2.compile_with_kernel_type<DUMMY>("-cl-mad-enable");
+  assert(prog2.get_state() == cl::sycl::program_state::compiled &&
+         "fail to compile program");
+  // CHECK-IS-OPT-DISABLE: -cl-opt-disable
+  // CHECK-IS-OPT-DISABLE-NOT: -cl-mad-enable
+  assert(prog2.get_compile_options() == "-cl-mad-enable" &&
+         "program::get_compile_options() output is wrong");
   return 0;
 }
