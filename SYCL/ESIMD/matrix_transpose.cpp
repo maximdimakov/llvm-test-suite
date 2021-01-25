@@ -5,14 +5,11 @@
 // SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
 //
 //===----------------------------------------------------------------------===//
-// TODO enable on Windows and Level Zero
-// REQUIRES: linux && gpu && opencl
+// TODO enable on Windows
+// REQUIRES: linux && gpu
 // UNSUPPORTED: cuda
 // RUN: %clangxx-esimd -fsycl %s -o %t.out
 // RUN: %ESIMD_RUN_PLACEHOLDER %t.out
-
-// The test is hanging on OCL RT 20.42.18209
-// UNSUPPORTED: linux && gpu && opencl
 
 #include "esimd_test_utils.hpp"
 
