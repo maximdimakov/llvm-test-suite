@@ -1,7 +1,7 @@
 // RUN: %clangxx -fsycl -fsycl-targets=%sycl_triple %s -o %t.out
-// RUN: %CPU_RUN_PLACEHOLDER SYCL_PI_TRACE=-1 SYCL_PROGRAM_LINK_OPTIONS="-cl-fast-relaxed-math" %t.out %CPU_CHECK_PLACEHOLDER --check-prefix=CHECK-IS-FINITE-MATH
-// RUN: %GPU_RUN_PLACEHOLDER SYCL_PI_TRACE=-1 SYCL_PROGRAM_LINK_OPTIONS="-cl-fast-relaxed-math" %t.out %GPU_CHECK_PLACEHOLDER --check-prefix=CHECK-IS-FINITE-MATH
-// RUN: %ACC_RUN_PLACEHOLDER SYCL_PI_TRACE=-1 SYCL_PROGRAM_LINK_OPTIONS="-cl-fast-relaxed-math" %t.out %ACC_CHECK_PLACEHOLDER --check-prefix=CHECK-IS-FINITE-MATH
+// RUN: %CPU_RUN_PLACEHOLDER SYCL_PI_TRACE=-1 SYCL_PROGRAM_LINK_OPTIONS="-cl-fast-relaxed-math" %t.out %CPU_CHECK_PLACEHOLDER --check-prefix=CHECK-IS-RELAXED-MATH
+// RUN: %GPU_RUN_PLACEHOLDER SYCL_PI_TRACE=-1 SYCL_PROGRAM_LINK_OPTIONS="-cl-fast-relaxed-math" %t.out %GPU_CHECK_PLACEHOLDER --check-prefix=CHECK-IS-RELAXED-MATH
+// RUN: %ACC_RUN_PLACEHOLDER SYCL_PI_TRACE=-1 SYCL_PROGRAM_LINK_OPTIONS="-cl-fast-relaxed-math" %t.out %ACC_CHECK_PLACEHOLDER --check-prefix=CHECK-IS-RELAXED-MATH
 
 // RUN: %CPU_RUN_PLACEHOLDER SYCL_PI_TRACE=-1 SYCL_PROGRAM_COMPILE_OPTIONS="-cl-opt-disable" %t.out %CPU_CHECK_PLACEHOLDER --check-prefix=CHECK-IS-OPT-DISABLE
 // RUN: %GPU_RUN_PLACEHOLDER SYCL_PI_TRACE=-1 SYCL_PROGRAM_COMPILE_OPTIONS="-cl-opt-disable" %t.out %GPU_CHECK_PLACEHOLDER --check-prefix=CHECK-IS-OPT-DISABLE
@@ -27,8 +27,8 @@ int main(void) {
   prog1.link("-cl-finite-math-only");
   assert(prog1.get_state() == cl::sycl::program_state::linked &&
          "fail to link program");
-  // CHECK-IS-FINITE-MATH: -cl-fast-relaxed-math
-  // CHECK-IS-FINITE-MATH-NOT: -cl-finite-math-only
+  // CHECK-IS-RELAXED-MATH: -cl-fast-relaxed-math
+  // CHECK-IS-RELAXED-MATH-NOT: -cl-finite-math-only
   assert(prog1.get_link_options() == "-cl-finite-math-only" &&
          "program::get_link_options() output is wrong");
 
