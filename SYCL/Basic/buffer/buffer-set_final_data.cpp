@@ -5,9 +5,8 @@
 
 #include <CL/sycl.hpp>
 #include <CL/sycl/stl.hpp>
-#include <vector>
 #include <memory>
-#include <iostream>
+#include <vector>
 
 int main() {
   using T = bool;
