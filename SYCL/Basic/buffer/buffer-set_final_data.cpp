@@ -9,8 +9,7 @@
 #include <memory>
 #include <iostream>
 
-int main()
-{
+int main() {
   using T = bool;
   size_t size = 32;
   const size_t dims = 1;
@@ -34,16 +33,13 @@ int main()
     buf_shrd.set_write_back(true);
 
     Queue.submit([&](cl::sycl::handler &cgh) {
-        auto Accessor = buf_shrd.get_access<cl::sycl::access::mode::write>(cgh);
-        cgh.parallel_for<class FillBuffer>(
-          r, [=](cl::sycl::id<1> WIid) {
-          Accessor[WIid] = false;
-          });
+      auto Accessor = buf_shrd.get_access<cl::sycl::access::mode::write>(cgh);
+      cgh.parallel_for<class FillBuffer>(
+          r, [=](cl::sycl::id<1> WIid) { Accessor[WIid] = false; });
     });
   } // Data is copied back
 
-  for (size_t i = 0; i < size; i++)
-  {
+  for (size_t i = 0; i < size; i++) {
     if (data_vector[i] != true)
       assert(false);
   }
