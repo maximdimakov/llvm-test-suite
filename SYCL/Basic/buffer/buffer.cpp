@@ -509,9 +509,12 @@ int main() {
     const size_t dims = 1;
     cl::sycl::range<dims> r(size);
 
-    std::shared_ptr<bool> bool_shrd(new bool[size], [](bool *data) { delete[] data; });
-    std::shared_ptr<int> int_shrd(new int[size], [](int *data) { delete[] data; });
-    std::shared_ptr<double> double_shrd(new double[size], [](double *data) { delete[] data; });
+    std::shared_ptr<bool> bool_shrd(new bool[size],
+                                    [](bool *data) { delete[] data; });
+    std::shared_ptr<int> int_shrd(new int[size],
+                                  [](int *data) { delete[] data; });
+    std::shared_ptr<double> double_shrd(new double[size],
+                                        [](double *data) { delete[] data; });
 
     std::vector<bool> bool_vector;
     std::vector<int> int_vector;
@@ -537,7 +540,7 @@ int main() {
       std::fill(int_shrd.get(), (int_shrd.get() + size), int());
       std::fill(double_shrd.get(), (double_shrd.get() + size), double());
       m.unlock();
-      
+
       buf_bool_shrd.set_final_data(bool_vector.begin());
       buf_int_shrd.set_final_data(int_vector.begin());
       buf_double_shrd.set_final_data(double_vector.begin());
@@ -546,21 +549,23 @@ int main() {
       buf_double_shrd.set_write_back(true);
 
       Queue.submit([&](cl::sycl::handler &cgh) {
-        auto Accessor_bool= buf_bool_shrd.get_access<cl::sycl::access::mode::write>(cgh);
-        auto Accessor_int = buf_int_shrd.get_access<cl::sycl::access::mode::write>(cgh);
-        auto Accessor_double = buf_double_shrd.get_access<cl::sycl::access::mode::write>(cgh);
-        cgh.parallel_for<class FillBuffer>(
-            r, [=](cl::sycl::id<1> WIid) { 
-              Accessor_bool[WIid] = true;
-              Accessor_int[WIid] = 3;
-              Accessor_double[WIid] = 7.5;
-              });
+        auto Accessor_bool =
+            buf_bool_shrd.get_access<cl::sycl::access::mode::write>(cgh);
+        auto Accessor_int =
+            buf_int_shrd.get_access<cl::sycl::access::mode::write>(cgh);
+        auto Accessor_double =
+            buf_double_shrd.get_access<cl::sycl::access::mode::write>(cgh);
+        cgh.parallel_for<class FillBuffer>(r, [=](cl::sycl::id<1> WIid) {
+          Accessor_bool[WIid] = true;
+          Accessor_int[WIid] = 3;
+          Accessor_double[WIid] = 7.5;
+        });
       });
     } // Data is copied back
 
     for (size_t i = 0; i < size; i++) {
-      if (bool_vector[i] != true || int_vector[i] != 3 || double_vector[i] != 7.5)
-      {
+      if (bool_vector[i] != true || int_vector[i] != 3 ||
+          double_vector[i] != 7.5) {
         assert(false && "Data was not copied back");
         return 1;
       }
