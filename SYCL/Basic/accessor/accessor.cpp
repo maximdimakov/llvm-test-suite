@@ -219,12 +219,11 @@ int main() {
     const auto range_img = cl::sycl::range<dims>(3);
     auto image =
         cl::sycl::image<dims>(cl::sycl::image_channel_order::rgba,
-                              cl::sycl::image_channel_type::fp32,
-                              range_img);
+                              cl::sycl::image_channel_type::fp32, range_img);
 
     {
       queue.submit([&](cl::sycl::handler &cgh) {
-        auto properties = cl::sycl::property_list {};
+        auto properties = cl::sycl::property_list{};
 
         auto acc_loc_p =
             cl::sycl::accessor<data_loc, dims, mode_loc, target_loc>(
@@ -238,7 +237,7 @@ int main() {
             image, cgh, properties);
 
         cgh.single_task<class loc_img_acc>([=]() {});
-    });
+      });
     }
   }
 
