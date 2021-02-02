@@ -217,26 +217,28 @@ int main() {
     constexpr auto mode_img = cl::sycl::access::mode::read;
     constexpr auto target_img = cl::sycl::target::image;
     const auto range_img = cl::sycl::range<dims>(3);
-    auto image = cl::sycl::image<dims>(cl::sycl::image_channel_order::rgba,
-                                      cl::sycl::image_channel_type::fp32,
-                                      range_img);
+    auto image =
+        cl::sycl::image<dims>(cl::sycl::image_channel_order::rgba,
+                              cl::sycl::image_channel_type::fp32,
+                              range_img);
 
-      {
-        queue.submit([&](cl::sycl::handler &cgh) {
-
+    {
+      queue.submit([&](cl::sycl::handler &cgh) {
         auto properties = cl::sycl::property_list {};
 
-        auto acc_loc_p = cl::sycl::accessor<data_loc, dims, mode_loc, target_loc>(
-          range_loc, cgh, properties);
+        auto acc_loc_p =
+            cl::sycl::accessor<data_loc, dims, mode_loc, target_loc>(
+                range_loc, cgh, properties);
         auto acc_loc = cl::sycl::accessor<data_loc, dims, mode_loc, target_loc>(
-          range_loc, cgh, properties);  
-        auto acc_img_p = cl::sycl::accessor<data_img, dims, mode_img, target_img>(
-          image, cgh, properties);
+            range_loc, cgh, properties);
+        auto acc_img_p =
+            cl::sycl::accessor<data_img, dims, mode_img, target_img>(
+                image, cgh, properties);
         auto acc_img = cl::sycl::accessor<data_img, dims, mode_img, target_img>(
-          image, cgh, properties);
+            image, cgh, properties);
 
-        cgh.single_task<class loc_img_acc>([=](){});
-      });
+        cgh.single_task<class loc_img_acc>([=]() {});
+    });
     }
   }
 
