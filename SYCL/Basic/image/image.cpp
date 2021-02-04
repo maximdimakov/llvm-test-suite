@@ -111,7 +111,7 @@ int main() {
       });
     }
   }
-  
+
   // image with write accessor to it in kernel
   {
     int NX = 32;

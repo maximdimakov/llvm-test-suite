@@ -200,7 +200,6 @@ int main() {
     }
   }
 
-
   // Local accessor
   {
     cl::sycl::queue queue;
