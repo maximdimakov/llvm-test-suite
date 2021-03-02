@@ -66,9 +66,7 @@ int main() {
         return_fail();
       }
 
-      auto e = q.submit([&](handler &cgh) {
-        cgh.single_task<DUMMY>([](){});
-      });
+      auto e = q.submit([&](handler &cgh) { cgh.single_task<DUMMY>([]() {}); });
       if (e.get_backend() != plt.get_backend()) {
         return_fail();
       }
