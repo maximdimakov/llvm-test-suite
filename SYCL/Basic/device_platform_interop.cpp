@@ -5,7 +5,8 @@
 // RUN: %CPU_RUN_PLACEHOLDER %t.run
 // RUN: %ACC_RUN_PLACEHOLDER %t.run
 
-//==--------device_platform_interop.cpp - SYCL device and platform interop constructors test ----------------==//
+//==--------device_platform_interop.cpp - SYCL device and platform interop
+//constructors test ----------------==//
 //
 // Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
 // See https://llvm.org/LICENSE.txt for license information.
@@ -36,7 +37,7 @@ int main() {
   cl_platform_id cl_platform;
   {
     platform P2(device_selector);
-    cl_platform = P2.get_native<backend::opencl>(); 
+    cl_platform = P2.get_native<backend::opencl>();
   }
   platform P3(cl_platform);
   assert(P1 == P3 && "Platform impls are different");
