@@ -49,7 +49,6 @@ int main() {
       }
 
       program prog(c);
-      prog.compile_with_kernel_type<DUMMY>();
       if (prog.get_backend() != plt.get_backend()) {
         return_fail();
       }
