@@ -50,7 +50,6 @@ int main() {
 
       program prog(c);
       prog.compile_with_kernel_type<DUMMY>();
-      prog.link("-cl-finite-math-only");
       if (prog.get_backend() != plt.get_backend()) {
         return_fail();
       }
