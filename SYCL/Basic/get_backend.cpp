@@ -13,11 +13,6 @@
 
 using namespace cl::sycl;
 
-class DUMMY {
-public:
-  void operator()(item<1>){};
-};
-
 bool check(backend be) {
   switch (be) {
   case backend::opencl:
@@ -64,7 +59,8 @@ int main() {
         return_fail();
       }
 
-      auto e = q.submit([&](handler &cgh) { cgh.single_task<DUMMY>([]() {}); });
+      unsigned char *HostAlloc = (unsigned char *)malloc_host(1, c);
+      auto e = q.memset(HostAlloc, 42, 1);
       if (e.get_backend() != plt.get_backend()) {
         return_fail();
       }
