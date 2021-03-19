@@ -5,8 +5,8 @@
 // RUN: %CPU_RUN_PLACEHOLDER %t.run
 // RUN: %ACC_RUN_PLACEHOLDER %t.run
 
-//==--------device_platform_interop.cpp - SYCL device and platform interop
-// constructors test ----------------==//
+//==------------------- device_platform_interop.cpp ------------------------==//
+// The test for SYCL device and platform interop constructors
 //
 // Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
 // See https://llvm.org/LICENSE.txt for license information.
