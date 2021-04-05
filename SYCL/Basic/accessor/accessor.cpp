@@ -178,9 +178,9 @@ int main() {
         queue.submit([&](cl::sycl::handler &cgh) {
           auto acc =
               cl::sycl::accessor<int, 2, cl::sycl::access::mode::atomic,
-                                cl::sycl::access::target::local>(range, cgh);
+                                 cl::sycl::access::target::local>(range, cgh);
           cgh.parallel_for<class dim2_subscr_atomic>(
-              range, [=] (cl::sycl::id<2>) {
+              range, [=](cl::sycl::id<2>) {
                 sycl::atomic<int, sycl::access::address_space::local_space>
                     value = acc[0][0];
               });
