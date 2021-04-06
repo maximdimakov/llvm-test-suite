@@ -180,7 +180,7 @@ int main() {
               cl::sycl::accessor<int, 2, cl::sycl::access::mode::atomic,
                                  cl::sycl::access::target::local>(range, cgh);
           cgh.parallel_for<class dim2_subscr_atomic>(
-              range, [=](cl::sycl::id<2>) {
+              cl::sycl::nd_range<2>{range, range}, [=](cl::sycl::nd_item<2>) {
                 sycl::atomic<int, sycl::access::address_space::local_space>
                     value = acc[0][0];
               });
