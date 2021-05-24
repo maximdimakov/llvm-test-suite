@@ -37,9 +37,9 @@ void copy(buffer<DataT, 1> &Src, buffer<DataT, 1> &Dst, queue &Q) {
     auto DstA = Dst.template get_access<mode::write>(CGH);
 
     CGH.codeplay_host_task([=](interop_handle IH) {
-      auto NativeQ = IH.get_native_queue();
-      auto SrcMem = IH.get_native_mem(SrcA);
-      auto DstMem = IH.get_native_mem(DstA);
+      auto NativeQ = IH.get_native_queue<backend::opencl>();
+      auto SrcMem = IH.get_native_mem<backend::opencl>(SrcA);
+      auto DstMem = IH.get_native_mem<backend::opencl>(DstA);
       cl_event Event;
 
       int RC = clEnqueueCopyBuffer(NativeQ, SrcMem, DstMem, 0, 0,
@@ -221,8 +221,10 @@ void test5() {
   checkBufferValues(Buffer2, static_cast<int>(123));
 }
 
-// The test checks that an exception which is thrown from host_task body
-// is reported as asynchronous.
+// The test checks that placeholder accessors are correctly handled,
+// when properly registered in the command group.
+// It also checks that an exception is thrown if the placeholder accessor
+// is not registered.
 void test6() {
   queue Queue([](sycl::exception_list ExceptionList) {
     if (ExceptionList.size() != 1) {
@@ -232,20 +234,40 @@ void test6() {
     std::rethrow_exception(*ExceptionList.begin());
   });
 
+  // Placeholder accessor that is properly registered in CGH.
   try {
     size_t size = 1;
     buffer<int, 1> Buf{size};
+    accessor<int, 1, mode::write, target::global_buffer,
+             access::placeholder::true_t>
+        PHAcc(Buf);
     Queue.submit([&](sycl::handler &CGH) {
-      auto acc = Buf.get_access<mode::write, target::host_buffer>(CGH);
+      CGH.require(PHAcc);
       CGH.codeplay_host_task(
-          [=](interop_handle IH) { (void)IH.get_native_mem(acc); });
+          [=](interop_handle IH) { (void)IH.get_native_mem(PHAcc); });
+    });
+    Queue.wait_and_throw();
+  } catch (sycl::exception &E) {
+    std::cerr << "Unexpected exception caught: " << E.what();
+    assert(!"Unexpected exception caught");
+  }
+
+  // Placeholder accessor that is NOT registered in CGH.
+  try {
+    size_t size = 1;
+    buffer<int, 1> Buf{size};
+    accessor<int, 1, mode::write, target::global_buffer,
+             access::placeholder::true_t>
+        PHAcc(Buf);
+    Queue.submit([&](sycl::handler &CGH) {
+      CGH.codeplay_host_task(
+          [=](interop_handle IH) { (void)IH.get_native_mem(PHAcc); });
     });
     Queue.wait_and_throw();
     assert(!"Expected exception was not caught");
-  } catch (sycl::exception &ExpectedException) {
-    assert(std::string(ExpectedException.what())
-                   .find("memory object out of accessor for specified target "
-                         "is not allowed") != std::string::npos &&
+  } catch (sycl::exception &E) {
+    assert(std::string(E.what()).find("Invalid memory object") !=
+               std::string::npos &&
            "Unexpected error was caught!");
   }
 }
