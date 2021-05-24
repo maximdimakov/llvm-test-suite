@@ -197,7 +197,8 @@ constexpr void constexpr_verify_add() {
   constexpr half result = a + b;
   constexpr half diff = result - ref;
   static_assert(std::fabs(static_cast<float>(diff)) <
-           std::numeric_limits<cl::sycl::half>::epsilon(), "Constexpr add is wrong");
+                    std::numeric_limits<cl::sycl::half>::epsilon(),
+                "Constexpr add is wrong");
 }
 
 constexpr void constexpr_verify_sub() {
@@ -205,7 +206,8 @@ constexpr void constexpr_verify_sub() {
   constexpr half result = a - b;
   constexpr half diff = result - ref;
   static_assert(std::fabs(static_cast<float>(diff)) <
-           std::numeric_limits<cl::sycl::half>::epsilon(), "Constexpr sub is wrong");
+                    std::numeric_limits<cl::sycl::half>::epsilon(),
+                "Constexpr sub is wrong");
 }
 
 constexpr void constexpr_verify_mul() {
@@ -213,7 +215,8 @@ constexpr void constexpr_verify_mul() {
   constexpr half result = a * b;
   constexpr half diff = result - ref;
   static_assert(std::fabs(static_cast<float>(diff)) <
-           std::numeric_limits<cl::sycl::half>::epsilon(), "Constexpr mul is wrong");
+                    std::numeric_limits<cl::sycl::half>::epsilon(),
+                "Constexpr mul is wrong");
 }
 
 constexpr void constexpr_verify_div() {
@@ -221,7 +224,8 @@ constexpr void constexpr_verify_div() {
   constexpr half result = a / b;
   constexpr half diff = result - ref;
   static_assert(std::fabs(static_cast<float>(diff)) <
-           std::numeric_limits<cl::sycl::half>::epsilon(), "Constexpr div is wrong");
+                    std::numeric_limits<cl::sycl::half>::epsilon(),
+                "Constexpr div is wrong");
 }
 
 int main() {
