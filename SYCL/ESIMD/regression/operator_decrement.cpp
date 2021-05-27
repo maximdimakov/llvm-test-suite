@@ -1,14 +1,16 @@
-//==---------------- vadd_1d.cpp  - DPC++ ESIMD on-device test -------------==//
+//==------------- operator_decrement.cpp  - DPC++ ESIMD on-device test -----==//
 //
 // Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
 // See https://llvm.org/LICENSE.txt for license information.
 // SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
 //
 //===----------------------------------------------------------------------===//
+// This is a test for a bug found simd_view::operator--
+//
 // REQUIRES: gpu
 // UNSUPPORTED: cuda
-// RUN: %clangxx -fsycl %s -o %t.out
-// RUN: env SYCL_PI_TRACE=-1 %GPU_RUN_PLACEHOLDER %t.out 2>&1 %GPU_CHECK_PLACEHOLDER
+// RUN: %clangxx -fsycl -I%S/.. %s -o %t.out
+// RUN: %GPU_RUN_PLACEHOLDER %t.out
 
 #include "esimd_test_utils.hpp"
 
@@ -19,22 +21,17 @@
 using namespace cl::sycl;
 
 int main(void) {
-  constexpr unsigned Size = 1024 * 128;
+  constexpr unsigned Size = 1024;
   constexpr unsigned VL = 16;
 
   float *A = new float[Size];
-  float *B = new float[Size];
-  float *C = new float[Size];
 
   for (unsigned i = 0; i < Size; ++i) {
-    A[i] = B[i] = i;
-    C[i] = 0.0f;
+    A[i] = i + 1;
   }
 
   try {
     buffer<float, 1> bufa(A, range<1>(Size));
-    buffer<float, 1> bufb(B, range<1>(Size));
-    buffer<float, 1> bufc(C, range<1>(Size));
 
     // We need that many workgroups
     cl::sycl::range<1> GlobalRange{Size / VL};
@@ -48,19 +45,16 @@ int main(void) {
     std::cout << "Running on " << dev.get_info<info::device::name>() << "\n";
 
     auto e = q.submit([&](handler &cgh) {
-      auto PA = bufa.get_access<access::mode::read>(cgh);
-      auto PB = bufb.get_access<access::mode::read>(cgh);
-      auto PC = bufc.get_access<access::mode::write>(cgh);
+      auto PA = bufa.get_access<access::mode::read_write>(cgh);
       cgh.parallel_for<class Test>(
           GlobalRange * LocalRange, [=](id<1> i) SYCL_ESIMD_KERNEL {
             using namespace sycl::ext::intel::experimental::esimd;
             unsigned int offset = i * VL * sizeof(float);
             simd<float, VL> va;
             va.copy_from(PA, offset);
-            simd<float, VL> vb;
-            vb.copy_from(PB, offset);
-            simd<float, VL> vc = va + vb;
-            vc.copy_to(PC, offset);
+            auto va_view = va.select<VL, 1>(0);
+            va_view--;
+            va.copy_to(PA, offset);
           });
     });
     e.wait();
@@ -68,19 +62,16 @@ int main(void) {
     std::cout << "SYCL exception caught: " << e.what() << '\n';
 
     delete[] A;
-    delete[] B;
-    delete[] C;
-
     return e.get_cl_code();
   }
 
   int err_cnt = 0;
 
   for (unsigned i = 0; i < Size; ++i) {
-    if (A[i] + B[i] != C[i]) {
+    if (A[i] != i) {
       if (++err_cnt < 10) {
-        std::cout << "failed at index " << i << ", " << C[i] << " != " << A[i]
-                  << " + " << B[i] << "\n";
+        std::cout << "failed at index " << i << ", " << A[i] << " != " << i
+                  << "\n";
       }
     }
   }
@@ -91,13 +82,7 @@ int main(void) {
   }
 
   delete[] A;
-  delete[] B;
-  delete[] C;
 
   std::cout << (err_cnt > 0 ? "FAILED\n" : "Passed\n");
   return err_cnt > 0 ? 1 : 0;
 }
-
-// CHECK: ---> piProgramBuild(
-// CHECK: <const char *>: {{.*}}-vc-codegen
-// CHECK: ) ---> pi_result : PI_SUCCESS
