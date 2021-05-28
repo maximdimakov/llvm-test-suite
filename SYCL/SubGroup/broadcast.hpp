@@ -24,7 +24,7 @@ template <typename T> void check(queue &Queue) {
         /*Broadcast GID of element with SGLID == SGID % SGMLR*/
         syclacc[NdItem.get_global_id()] =
             ONEAPI::broadcast(SG, T(NdItem.get_global_id(0)),
-                      SG.get_group_id() % SG.get_max_local_range()[0]);
+                              SG.get_group_id() % SG.get_max_local_range()[0]);
         if (NdItem.get_global_id(0) == 0)
           sgsizeacc[0] = SG.get_max_local_range()[0];
       });
