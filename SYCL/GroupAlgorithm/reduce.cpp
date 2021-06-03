@@ -76,13 +76,13 @@ int main() {
   std::iota(input.begin(), input.end(), 0);
   std::fill(output.begin(), output.end(), 0);
 
-  test<class KernelNamePlusV>(q, input, output, plus<>(), 0);
+  test<class KernelNamePlusV>(q, input, output, ONEAPI::plus<>(), 0);
   test<class KernelNameMinimumV>(q, input, output, minimum<>(),
                                  std::numeric_limits<int>::max());
   test<class KernelNameMaximumV>(q, input, output, maximum<>(),
                                  std::numeric_limits<int>::lowest());
 
-  test<class KernelNamePlusI>(q, input, output, plus<int>(), 0);
+  test<class KernelNamePlusI>(q, input, output, ONEAPI::plus<int>(), 0);
   test<class KernelNameMinimumI>(q, input, output, minimum<int>(),
                                  std::numeric_limits<int>::max());
   test<class KernelNameMaximumI>(q, input, output, maximum<int>(),
