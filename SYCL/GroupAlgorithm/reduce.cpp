@@ -91,9 +91,11 @@ int main() {
 #ifdef SPIRV_1_3
   test<class KernelName_WonwuUVPUPOTKRKIBtT>(q, input, output,
                                              ONEAPI::multiplies<int>(), 1);
-  test<class KernelName_qYBaJDZTMGkdIwD>(q, input, output, ONEAPI::bit_or<int>(), 0);
+  test<class KernelName_qYBaJDZTMGkdIwD>(q, input, output,
+                                         ONEAPI::bit_or<int>(), 0);
   test<class KernelName_eLSFt>(q, input, output, ONEAPI::bit_xor<int>(), 0);
-  test<class KernelName_uFhJnxSVhNAiFPTG>(q, input, output, ONEAPI::bit_and<int>(), ~0);
+  test<class KernelName_uFhJnxSVhNAiFPTG>(q, input, output,
+                                          ONEAPI::bit_and<int>(), ~0);
 #endif // SPIRV_1_3
 
   std::cout << "Test passed." << std::endl;

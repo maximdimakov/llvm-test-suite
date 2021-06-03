@@ -153,11 +153,13 @@ int main() {
                                  std::numeric_limits<int>::lowest());
 
 #ifdef SPIRV_1_3
-  test<class KernelName_VzAPutpBRRJrQPB>(q, input, output, ONEAPI::multiplies<int>(),
-                                         1);
+  test<class KernelName_VzAPutpBRRJrQPB>(q, input, output,
+                                         ONEAPI::multiplies<int>(), 1);
   test<class KernelName_UXdGbr>(q, input, output, ONEAPI::bit_or<int>(), 0);
-  test<class KernelName_saYaodNyJknrPW>(q, input, output, ONEAPI::bit_xor<int>(), 0);
-  test<class KernelName_GPcuAlvAOjrDyP>(q, input, output, ONEAPI::bit_and<int>(), ~0);
+  test<class KernelName_saYaodNyJknrPW>(q, input, output,
+                                        ONEAPI::bit_xor<int>(), 0);
+  test<class KernelName_GPcuAlvAOjrDyP>(q, input, output,
+                                        ONEAPI::bit_and<int>(), ~0);
 #endif // SPIRV_1_3
 
   std::cout << "Test passed." << std::endl;
