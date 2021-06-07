@@ -32,13 +32,13 @@ void test(queue q, InputContainer input, OutputContainer output,
   typedef typename InputContainer::value_type InputT;
   typedef typename OutputContainer::value_type OutputT;
   typedef class exclusive_scan_kernel<SpecializationKernelName, 0> kernel_name0;
-  typedef class exclusive_scan_kernel<SpecializationKernelName, 1> kernel_name1;
-  typedef class exclusive_scan_kernel<SpecializationKernelName, 2> kernel_name2;
-  typedef class exclusive_scan_kernel<SpecializationKernelName, 3> kernel_name3;
-  OutputT init = 42;
-  size_t N = input.size();
   size_t G = 64;
+  size_t N = input.size();
   std::vector<OutputT> expected(N);
+
+  // checking 
+  // template <typename Group, typename T, typename BinaryOperation>
+  // T exclusive_scan_over_group(Group g, T x, BinaryOperation binary_op)
   {
     buffer<InputT> in_buf(input.data(), input.size());
     buffer<OutputT> out_buf(output.data(), output.size());
@@ -56,6 +56,12 @@ void test(queue q, InputContainer input, OutputContainer output,
                       identity, binary_op);
   assert(std::equal(output.begin(), output.begin() + G, expected.begin()));
 
+  typedef class exclusive_scan_kernel<SpecializationKernelName, 1> kernel_name1;
+  OutputT init = 42;
+
+  // checking 
+  // template <typename Group, typename V, typename T, class BinaryOperation>
+  // T exclusive_scan_over_group(Group g, V x, T init, BinaryOperation binary_op)
   {
     buffer<InputT> in_buf(input.data(), input.size());
     buffer<OutputT> out_buf(output.data(), output.size());
@@ -73,6 +79,13 @@ void test(queue q, InputContainer input, OutputContainer output,
                       binary_op);
   assert(std::equal(output.begin(), output.begin() + G, expected.begin()));
 
+  typedef class exclusive_scan_kernel<SpecializationKernelName, 2> kernel_name2;
+
+  // checking 
+  // template <typename Group, typename InPtr, typename OutPtr,
+  //           class BinaryOperation>
+  // OutPtr joint_exclusive_scan(Group g, InPtr first, InPtr last, OutPtr result,
+  //                  BinaryOperation binary_op)
   {
     buffer<InputT> in_buf(input.data(), input.size());
     buffer<OutputT> out_buf(output.data(), output.size());
@@ -90,6 +103,13 @@ void test(queue q, InputContainer input, OutputContainer output,
                       identity, binary_op);
   assert(std::equal(output.begin(), output.begin() + N, expected.begin()));
 
+  typedef class exclusive_scan_kernel<SpecializationKernelName, 3> kernel_name3;
+
+  // checking 
+  // template <typename Group, typename InPtr, typename OutPtr, typename T,
+  //      class BinaryOperation>
+  // OutPtr joint_exclusive_scan(Group g, InPtr first, InPtr last, OutPtr result, T init,
+  //                  BinaryOperation binary_op)
   {
     buffer<InputT> in_buf(input.data(), input.size());
     buffer<OutputT> out_buf(output.data(), output.size());
