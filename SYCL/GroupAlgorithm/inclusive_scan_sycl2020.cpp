@@ -24,23 +24,6 @@ using namespace sycl;
 template <class SpecializationKernelName, int TestNumber>
 class inclusive_scan_kernel;
 
-// std::inclusive_scan isn't implemented yet, so use serial implementation
-// instead
-namespace emu {
-template <typename InputIterator, typename OutputIterator,
-          class BinaryOperation, typename T>
-OutputIterator inclusive_scan(InputIterator first, InputIterator last,
-                              OutputIterator result, BinaryOperation binary_op,
-                              T init) {
-  T partial = init;
-  for (InputIterator it = first; it != last; ++it) {
-    partial = binary_op(partial, *it);
-    *(result++) = partial;
-  }
-  return result;
-}
-} // namespace emu
-
 template <typename SpecializationKernelName, typename InputContainer,
           typename OutputContainer, class BinaryOperation>
 void test(queue q, InputContainer input, OutputContainer output,
@@ -69,7 +52,7 @@ void test(queue q, InputContainer input, OutputContainer output,
       });
     });
   }
-  emu::inclusive_scan(input.begin(), input.begin() + G, expected.begin(),
+  std::inclusive_scan(input.begin(), input.begin() + G, expected.begin(),
                       binary_op, identity);
   assert(std::equal(output.begin(), output.begin() + G, expected.begin()));
 
@@ -86,7 +69,7 @@ void test(queue q, InputContainer input, OutputContainer output,
       });
     });
   }
-  emu::inclusive_scan(input.begin(), input.begin() + G, expected.begin(),
+  std::inclusive_scan(input.begin(), input.begin() + G, expected.begin(),
                       binary_op, init);
   assert(std::equal(output.begin(), output.begin() + G, expected.begin()));
 
@@ -103,7 +86,7 @@ void test(queue q, InputContainer input, OutputContainer output,
       });
     });
   }
-  emu::inclusive_scan(input.begin(), input.begin() + N, expected.begin(),
+  std::inclusive_scan(input.begin(), input.begin() + N, expected.begin(),
                       binary_op, identity);
   assert(std::equal(output.begin(), output.begin() + N, expected.begin()));
 
@@ -120,7 +103,7 @@ void test(queue q, InputContainer input, OutputContainer output,
       });
     });
   }
-  emu::inclusive_scan(input.begin(), input.begin() + N, expected.begin(),
+  std::inclusive_scan(input.begin(), input.begin() + N, expected.begin(),
                       binary_op, init);
   assert(std::equal(output.begin(), output.begin() + N, expected.begin()));
 }
