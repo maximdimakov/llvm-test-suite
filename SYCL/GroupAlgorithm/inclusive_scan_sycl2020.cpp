@@ -36,7 +36,7 @@ void test(queue q, InputContainer input, OutputContainer output,
   size_t G = 64;
   std::vector<OutputT> expected(N);
 
-  // checking 
+  // checking
   // template <typename Group, typename T, class BinaryOperation>
   // T inclusive_scan_over_group(Group g, T x, BinaryOperation binary_op)
   {
@@ -59,9 +59,10 @@ void test(queue q, InputContainer input, OutputContainer output,
   typedef class inclusive_scan_kernel<SpecializationKernelName, 1> kernel_name1;
   OutputT init = 42;
 
-  // checking 
+  // checking
   // template <typename Group, typename V, class BinaryOperation, typename T>
-  // T inclusive_scan_over_group(Group g, V x, BinaryOperation binary_op, T init)
+  // T inclusive_scan_over_group(Group g, V x, BinaryOperation binary_op, T
+  // init)
   {
     buffer<InputT> in_buf(input.data(), input.size());
     buffer<OutputT> out_buf(output.data(), output.size());
@@ -81,10 +82,11 @@ void test(queue q, InputContainer input, OutputContainer output,
 
   typedef class inclusive_scan_kernel<SpecializationKernelName, 2> kernel_name2;
 
-  // checking 
+  // checking
   // template <typename Group, typename InPtr, typename OutPtr,
   //           class BinaryOperation>
-  // OutPtr joint_inclusive_scan(Group g, InPtr first, InPtr last, OutPtr result,
+  // OutPtr joint_inclusive_scan(Group g, InPtr first, InPtr last, OutPtr
+  // result,
   //                  BinaryOperation binary_op)
   {
     buffer<InputT> in_buf(input.data(), input.size());
@@ -105,10 +107,11 @@ void test(queue q, InputContainer input, OutputContainer output,
 
   typedef class inclusive_scan_kernel<SpecializationKernelName, 3> kernel_name3;
 
-  // checking 
+  // checking
   // template <typename Group, typename InPtr, typename OutPtr,
   //      class BinaryOperation, typename T>
-  // OutPtr joint_inclusive_scan(Group g, InPtr first, InPtr last, OutPtr result,
+  // OutPtr joint_inclusive_scan(Group g, InPtr first, InPtr last, OutPtr
+  // result,
   //                             BinaryOperation binary_op, T init)
   {
     buffer<InputT> in_buf(input.data(), input.size());
