@@ -50,15 +50,14 @@ void test(queue q, InputContainer input, OutputContainer output,
           });
     });
   }
-  // std::reduce is not implemented yet, so use std::accumulate instead
-  assert(output[0] == std::accumulate(input.begin(), input.begin() + G,
+  assert(output[0] == std::reduce(input.begin(), input.begin() + G,
                                       identity, binary_op));
   assert(output[1] ==
-         std::accumulate(input.begin(), input.begin() + G, init, binary_op));
+         std::reduce(input.begin(), input.begin() + G, init, binary_op));
   assert(output[2] ==
-         std::accumulate(input.begin(), input.end(), identity, binary_op));
+         std::reduce(input.begin(), input.end(), identity, binary_op));
   assert(output[3] ==
-         std::accumulate(input.begin(), input.end(), init, binary_op));
+         std::reduce(input.begin(), input.end(), init, binary_op));
 }
 
 int main() {
