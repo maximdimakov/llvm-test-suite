@@ -87,13 +87,11 @@ int main() {
                                  std::numeric_limits<int>::lowest());
 
 #ifdef SPIRV_1_3
-  test<class KernelNameMultipliesI>(q, input, output,
-                                    sycl::multiplies<int>(), 1);
+  test<class KernelNameMultipliesI>(q, input, output, sycl::multiplies<int>(),
+                                    1);
   test<class KernelNameBitOrI>(q, input, output, sycl::bit_or<int>(), 0);
-  test<class KernelNameBitXorI>(q, input, output, sycl::bit_xor<int>(),
-                                0);
-  test<class KernelNameBitAndI>(q, input, output, sycl::bit_and<int>(),
-                                ~0);
+  test<class KernelNameBitXorI>(q, input, output, sycl::bit_xor<int>(), 0);
+  test<class KernelNameBitAndI>(q, input, output, sycl::bit_and<int>(), ~0);
 #endif // SPIRV_1_3
 
   std::cout << "Test passed." << std::endl;
