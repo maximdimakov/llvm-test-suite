@@ -32,8 +32,8 @@ void test(queue q, InputContainer input, OutputContainer output,
   typedef typename InputContainer::value_type InputT;
   typedef typename OutputContainer::value_type OutputT;
   typedef class exclusive_scan_kernel<SpecializationKernelName, 0> kernel_name0;
-  size_t G = 64;
-  size_t N = input.size();
+  constexpr size_t G = 64;
+  constexpr size_t N = input.size();
   std::vector<OutputT> expected(N);
 
   // checking
@@ -57,7 +57,7 @@ void test(queue q, InputContainer input, OutputContainer output,
   assert(std::equal(output.begin(), output.begin() + G, expected.begin()));
 
   typedef class exclusive_scan_kernel<SpecializationKernelName, 1> kernel_name1;
-  OutputT init = 42;
+  constexpr OutputT init = 42;
 
   // checking
   // template <typename Group, typename V, typename T, class BinaryOperation>

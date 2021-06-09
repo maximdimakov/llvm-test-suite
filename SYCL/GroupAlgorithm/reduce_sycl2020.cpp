@@ -27,9 +27,9 @@ void test(queue q, InputContainer input, OutputContainer output,
           typename OutputContainer::value_type identity) {
   typedef typename InputContainer::value_type InputT;
   typedef typename OutputContainer::value_type OutputT;
-  OutputT init = 42;
-  size_t N = input.size();
-  size_t G = 64;
+  constexpr OutputT init = 42;
+  constexpr size_t N = input.size();
+  constexpr size_t G = 64;
   {
     buffer<InputT> in_buf(input.data(), input.size());
     buffer<OutputT> out_buf(output.data(), output.size());
@@ -87,13 +87,13 @@ int main() {
                                  std::numeric_limits<int>::lowest());
 
 #ifdef SPIRV_1_3
-  test<class KernelName_WonwuUVPUPOTKRKIBtT>(q, input, output,
-                                             sycl::multiplies<int>(), 1);
-  test<class KernelName_qYBaJDZTMGkdIwD>(q, input, output, sycl::bit_or<int>(),
-                                         0);
-  test<class KernelName_eLSFt>(q, input, output, sycl::bit_xor<int>(), 0);
-  test<class KernelName_uFhJnxSVhNAiFPTG>(q, input, output,
-                                          sycl::bit_and<int>(), ~0);
+  test<class KernelNameMultipliesI>(q, input, output,
+                                    sycl::multiplies<int>(), 1);
+  test<class KernelNameBitOrI>(q, input, output, sycl::bit_or<int>(), 0);
+  test<class KernelNameBitXorI>(q, input, output, sycl::bit_xor<int>(),
+                                0);
+  test<class KernelNameBitAndI>(q, input, output, sycl::bit_and<int>(),
+                                ~0);
 #endif // SPIRV_1_3
 
   std::cout << "Test passed." << std::endl;
