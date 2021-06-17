@@ -24,7 +24,9 @@ constexpr size_t N = 100;
 template <typename T> void assert_close(const T &C, const cl::sycl::half ref) {
   for (size_t i = 0; i < N; i++) {
     auto diff = C[i] - ref;
-    assert(std::fabs(static_cast<float>(diff)) <
+    if (diff < 0)
+      diff *= -1;
+    assert(static_cast<float>(diff) <
            std::numeric_limits<cl::sycl::half>::epsilon());
   }
 }
