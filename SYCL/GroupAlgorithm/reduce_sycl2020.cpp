@@ -54,10 +54,11 @@ void test(queue q, InputContainer input, OutputContainer output,
   assert(output[0] == std::accumulate(input.begin(), input.begin() + G,
                                       identity, binary_op));
   assert(output[1] ==
-         std::reduce(input.begin(), input.begin() + G, init, binary_op));
+         std::accumulate(input.begin(), input.begin() + G, init, binary_op));
   assert(output[2] ==
-         std::reduce(input.begin(), input.end(), identity, binary_op));
-  assert(output[3] == std::reduce(input.begin(), input.end(), init, binary_op));
+         std::accumulate(input.begin(), input.end(), identity, binary_op));
+  assert(output[3] ==
+         std::accumulate(input.begin(), input.end(), init, binary_op));
 }
 
 int main() {
