@@ -24,9 +24,7 @@ constexpr size_t N = 100;
 template <typename T> void assert_close(const T &C, const cl::sycl::half ref) {
   for (size_t i = 0; i < N; i++) {
     auto diff = C[i] - ref;
-    if (diff < 0)
-      diff *= -1;
-    assert(static_cast<float>(diff) <
+    assert(std::fabs(static_cast<float>(diff)) <
            std::numeric_limits<cl::sycl::half>::epsilon());
   }
 }
@@ -198,7 +196,8 @@ constexpr void constexpr_verify_add() {
   constexpr half a{5.0}, b{2.0}, ref{7.0};
   constexpr half result = a + b;
   constexpr half diff = result - ref;
-  static_assert(std::fabs(static_cast<float>(diff)) <
+  constexpr auto sign = diff < 0 ? -1 : 1;
+  static_assert(sign * static_cast<float>(diff) <
                     std::numeric_limits<cl::sycl::half>::epsilon(),
                 "Constexpr add is wrong");
 }
@@ -207,7 +206,8 @@ constexpr void constexpr_verify_sub() {
   constexpr half a{5.0f}, b{2.0}, ref{3.0};
   constexpr half result = a - b;
   constexpr half diff = result - ref;
-  static_assert(std::fabs(static_cast<float>(diff)) <
+  constexpr auto sign = diff < 0 ? -1 : 1;
+  static_assert(sign * static_cast<float>(diff) <
                     std::numeric_limits<cl::sycl::half>::epsilon(),
                 "Constexpr sub is wrong");
 }
@@ -216,7 +216,8 @@ constexpr void constexpr_verify_mul() {
   constexpr half a{5.0f}, b{2.0}, ref{10.0};
   constexpr half result = a * b;
   constexpr half diff = result - ref;
-  static_assert(std::fabs(static_cast<float>(diff)) <
+  constexpr auto sign = diff < 0 ? -1 : 1;
+  static_assert(sign * static_cast<float>(diff) <
                     std::numeric_limits<cl::sycl::half>::epsilon(),
                 "Constexpr mul is wrong");
 }
@@ -225,7 +226,8 @@ constexpr void constexpr_verify_div() {
   constexpr half a{5.0f}, b{2.0}, ref{2.5};
   constexpr half result = a / b;
   constexpr half diff = result - ref;
-  static_assert(std::fabs(static_cast<float>(diff)) <
+  constexpr auto sign = diff < 0 ? -1 : 1;
+  static_assert(sign * static_cast<float>(diff) <
                     std::numeric_limits<cl::sycl::half>::epsilon(),
                 "Constexpr div is wrong");
 }
