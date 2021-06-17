@@ -50,8 +50,9 @@ void test(queue q, InputContainer input, OutputContainer output,
           });
     });
   }
-  assert(output[0] ==
-         std::reduce(input.begin(), input.begin() + G, identity, binary_op));
+  // std::reduce is not implemented yet, so use std::accumulate instead
+  assert(output[0] == std::accumulate(input.begin(), input.begin() + G,
+                                      identity, binary_op));
   assert(output[1] ==
          std::reduce(input.begin(), input.begin() + G, init, binary_op));
   assert(output[2] ==
