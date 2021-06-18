@@ -3,13 +3,7 @@
 // RUN: %GPU_RUN_PLACEHOLDER %t.out
 // RUN: %ACC_RUN_PLACEHOLDER %t.out
 
-// TODO: enable compile+runtime checks for operations defined in SPIR-V 1.3.
-// That requires either adding a switch to clang (-spirv-max-version=1.3) or
-// raising the spirv version from 1.1. to 1.3 for spirv translator
-// unconditionally. Using operators specific for spirv 1.3 and higher with
-// -spirv-max-version=1.1 being set by default causes assert/check fails
-// in spirv translator.
-// RUNx: %clangxx -fsycl -fsycl-targets=%sycl_triple -DSPIRV_1_3 %s -I . -o \
+// RUN: %clangxx -fsycl -fsycl-targets=%sycl_triple -DSPIRV_1_3 %s -I . -o \
    %t13.out
 
 #include "support.h"
@@ -26,6 +20,7 @@ class inclusive_scan_kernel;
 
 // std::inclusive_scan isn't implemented yet, so use serial implementation
 // instead
+// TODO: use std::inclusive_scan when it will be supported
 namespace emu {
 template <typename InputIterator, typename OutputIterator,
           class BinaryOperation, typename T>
